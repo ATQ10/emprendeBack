@@ -17,6 +17,8 @@ module.exports = {
           telefono: req.body.telefono,
         })
 
+        console.log(newUsuario);
+
         newUsuario.save(async (err,usuario)=>{
           if (err) {
             // Delete the file like normal

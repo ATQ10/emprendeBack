@@ -14,18 +14,18 @@ exports.signup = async (req, res) => {
       password: bcrypt.hashSync(req.body.password, 8),
       telefono: req.body.telefono,
     });
-
+/*
     if(req.file){
       const {filename} = req.file
       usuario.setImgUrl(filename)
     }else{
       usuario.setImgUrl('avatar.png')
     }
-
+*/
     usuario.save(async (err, user) => {
       if (err) {
          // Delete the file like normal
-          await unlinkAsync(req.file.path)
+         // await unlinkAsync(req.file.path)
           res.status(500)
             .send({
               message: err
@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
       } else {
         res.status(200)
           .send({
-            message: "usuario registrado exitosamente"
+            message: "Usuario registrado exitosamente"
           })
       }
     });
@@ -67,27 +67,28 @@ exports.signup = async (req, res) => {
         // checking if password was valid and send response accordingly
         if (!passwordIsValid) {
           return res.status(401)
-            .send({
+            .json({
               accessToken: null,
               message: "Contraseña inválida!"
             });
         }
         //signing token with user id
         var token = jwt.sign({
-          id: usuario.id
+          id: usuario._id
         }, process.env.API_SECRET, {
           expiresIn: 86400
         });
   
         //responding to client request with user profile success message and  access token .
         res.status(200)
-          .send({
+          .json({
             usuario: {
               id: usuario._id,
               email: usuario.email,
               nombre: usuario.nombre,
+              apellido: usuario.apellido,
             },
-            message: "Inicio de sesión exitoro",
+            message: "Inicio de sesión exitoso",
             accessToken: token,
           });
       });

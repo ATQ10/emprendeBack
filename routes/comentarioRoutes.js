@@ -1,31 +1,62 @@
 const router = require('express').Router()
 const comentarioController = require('../controllers/comentarioController')
+const verifyToken = require('../middlewares/authJWT');
 
 router.get('/', function (req, res) {
     res.status(200).json({ message: 'Estás en Comentarios' })
   })
 
-router.post('/create', function(req, res){
-    comentarioController.create(req,res)
+router.post('/create',verifyToken, function(req, res){
+    if (!req.user) {
+        res.status(403)
+          .send({
+            message: "Invalid JWT token"
+          });
+    }else
+        comentarioController.create(req,res)
     console.log("/create");
 })
 
-router.delete('/:id', function(req, res){
-    comentarioController.remove(req,res)
+router.delete('/:id',verifyToken, function(req, res){
+    if (!req.user) {
+        res.status(403)
+          .send({
+            message: "Invalid JWT token"
+          });
+    }else
+        comentarioController.remove(req,res)
 })
 
-router.put('/:id', function(req, res){
-    comentarioController.update(req,res)
+router.put('/:id',verifyToken, function(req, res){
+    if (!req.user) {
+        res.status(403)
+          .send({
+            message: "Invalid JWT token"
+          });
+    }else
+        comentarioController.update(req,res)
     console.log("/update");
 })
 
-router.get('/getByID/:id', function(req, res){
-    comentarioController.getByID(req,res)
+router.get('/getByID/:id',verifyToken, function(req, res){
+    if (!req.user) {
+        res.status(403)
+          .send({
+            message: "Invalid JWT token"
+          });
+    }else
+        comentarioController.getByID(req,res)
     console.log("/getByID");
 })
 
-router.get('/getAll', function(req, res){
-    comentarioController.getAll(req,res)
+router.get('/getAll',verifyToken, function(req, res){
+    if (!req.user) {
+        res.status(403)
+          .send({
+            message: "Invalid JWT token"
+          });
+    }else
+        comentarioController.getAll(req,res)
     console.log("/getAll");
 })
 module.exports = router
