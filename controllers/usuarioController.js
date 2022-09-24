@@ -81,7 +81,20 @@ module.exports = {
   update: function (req, res) {
     var id = req.params.id;
     let newUsuario = req.body;
-      Usuario.findByIdAndUpdate(id,newUsuario, function(err, usuario){
+    if(newUsuario.password == ''){
+      Usuario.findOne({_id:id}, function(err, usuario){
+        if(err) {
+            return res.status(500).json({
+              message: 'Se ha producido un error al obtener el usuario'
+            })
+        }
+        if(!usuario){
+            return res.status(404).json( {
+                message: 'No tenemos este usuario'
+            })
+        }
+        newUsuario.password = usuario.password;
+        Usuario.findByIdAndUpdate(id,newUsuario, function(err, usuario){
           if(err) {
             return res.status(500).json({
               message: 'Error actualizando usuario'
@@ -89,5 +102,16 @@ module.exports = {
           }
           return res.json(usuario);
       })
+    })
+    }else{
+      newUsuario.password = bcrypt.hashSync(newUsuario.password, 8)
+      Usuario.findByIdAndUpdate(id,newUsuario, function(err, usuario){
+          if(err) {
+            return res.status(500).json({
+              message: 'Error actualizando usuario'
+            })
+          }
+          return res.json(usuario);
+      })}
   },
 }

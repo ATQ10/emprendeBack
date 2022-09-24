@@ -58,12 +58,16 @@ router.put('/:id',verifyToken, function(req, res){
 
 router.get('/getByID/:id',verifyToken, function(req, res){
     console.log("/getByID");
-/*    if (!req.user) {
+    if (!req.user) {
       res.status(403)
         .send({
           message: "Invalid JWT token"
         });
-    }else */
+    }else if(req.params.id == "-1"){
+      console.log("Mi usuario")
+      req.params.id = req.user.id;
+      usuarioController.getByID(req,res)
+    }else
       usuarioController.getByID(req,res)
 })
 
