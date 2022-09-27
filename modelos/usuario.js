@@ -31,8 +31,7 @@ const usuarioSchema = new Schema({
     required:[true, "apellido requerido!"]
   },
   telefono:{
-    type: String,
-    required:[true, "telefono requerido!"]
+    type: String
   },
   creado: {
     type: Date,
