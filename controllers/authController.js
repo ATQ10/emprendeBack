@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const Usuario = require('../modelos/usuario');
 const fs = require('fs')
 const { promisify } = require('util')
+var nodemailer = require('nodemailer');
 
 const unlinkAsync = promisify(fs.unlink)
 
@@ -32,6 +33,35 @@ exports.signup = async (req, res) => {
             });
           return;
       } else {
+
+        //Creamos el objeto de transporte
+        var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'emprenego.notificacion@gmail.com',
+            pass: 'ebibqctqkpzkxitt'
+          }
+        });
+
+        var mensaje = "Bienvenid@ a EmpreNego\n"+
+                      "Accede a tu cuenta con: "+req.body.email+"\n"+
+                      "Contraseña: "+req.body.password;
+
+        var mailOptions = {
+          from: 'emprenego.notificacion@gmail.com',
+          to: req.body.email,
+          subject: 'Registro EmpreNego',
+          text: mensaje
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email enviado: ' + info.response);
+          }
+        });
+
         res.status(200)
           .send({
             message: "Usuario registrado exitosamente"
