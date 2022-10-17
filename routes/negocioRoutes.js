@@ -40,10 +40,13 @@ router.put('/:id',verifyToken, function(req, res){
 
 router.get('/getByID/:id',verifyToken, function(req, res){
     if (!req.user) {
+      negocioController.getByID(req,res)
+      /*
         res.status(403)
           .send({
             message: "Invalid JWT token"
-          });
+          });    
+      */
     }else
         negocioController.getByID(req,res)
     console.log("/getByID");

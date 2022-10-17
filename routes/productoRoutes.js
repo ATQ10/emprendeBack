@@ -50,12 +50,15 @@ router.get('/getByID/:id',verifyToken, function(req, res){
     console.log("/getByID");
 })
 
-router.get('/getAll',verifyToken, function(req, res){
+router.get('/getAll/:id',verifyToken, function(req, res){
     if (!req.user) {
+      productController.getAll(req,res)
+      /*
         res.status(403)
           .send({
             message: "Invalid JWT token"
           });
+      */
     }else
         productController.getAll(req,res)
     console.log("/getAll");

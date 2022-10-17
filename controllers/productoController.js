@@ -44,14 +44,28 @@ module.exports = {
       })
   },
   getAll: function(req, res) {
-      Producto.find(function(err, productos){
-        if(err) {
-          return res.status(500).json({
-            message: 'Error obteniendo los productos'
-          })
-        }
-        return res.json(productos)
-      })
+    var id = req.params.id
+      if(id=="-1"){
+        Producto.find(function(err, productos){
+          if(err) {
+            return res.status(500).json({
+              message: 'Error obteniendo los productos'
+            })
+          }
+          return res.json(productos)
+        })
+      }else{
+        console.log("IDN:",id);
+        Producto.find({idN:id},function(err, productos){
+          if(err) {
+            return res.status(500).json({
+              message: 'Error obteniendo los productos'
+            })
+          }
+          return res.json(productos)
+        })
+      }
+      
   },
   update: function (req, res) {
     var id = req.params.id;

@@ -6,6 +6,7 @@ module.exports = {
   create: function (req, res) {
     try {
         var newNegocio = new Negocio(req.body)
+        newNegocio.idU = req.user._id;
         newNegocio.save(function (err,negocio) {
             return res.status(200).json({
                 message: 'Negocio registrado',
@@ -29,7 +30,23 @@ module.exports = {
   },
   getByID: function (req, res) {
       var id = req.params.id
-      Negocio.findOne({_id:id}, function(err, negocio){
+      if(id=="-1"){
+        console.log(req.user._id);
+        Negocio.findOne({idU:req.user._id}, function(err, negocio){
+          if(err) {
+              return res.status(500).json({
+                message: 'Se ha producido un error al obtener el negocio'
+              })
+          }
+          if(!negocio){
+              return res.json( {
+                  message: 'No tenemos este negocio'
+              })
+          }
+          return res.json(negocio)
+      })
+      }else{
+        Negocio.findOne({_id:id}, function(err, negocio){
           if(err) {
               return res.status(500).json({
                 message: 'Se ha producido un error al obtener el negocio'
@@ -42,6 +59,8 @@ module.exports = {
           }
           return res.json(negocio)
       })
+    }
+      
   },
   getAll: function(req, res) {
     Negocio.find(function(err, negocios){
