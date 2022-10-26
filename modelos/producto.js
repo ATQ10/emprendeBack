@@ -36,6 +36,9 @@ const productoSchema = new Schema({
   creado: {
     type: Date,
     default: Date.now
+  },
+  url:{
+    type: String
   }
 });
 

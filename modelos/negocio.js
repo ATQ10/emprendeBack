@@ -25,6 +25,9 @@ const negocioSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  url:{
+    type: String
+  }
 });
 
 module.exports = mongoose.model('Negocio', negocioSchema);

@@ -1,12 +1,14 @@
 const router = require('express').Router()
 const productController = require('../controllers/productoController')
 const verifyToken = require('../middlewares/authJWT');
+const upload = require('../middlewares/uploadMiddleware');
+const multer = require("multer");
 
 router.get('/', function (req, res) {
     res.status(200).json({ message: 'Estás en Productos' })
   })
 
-router.post('/create',verifyToken, function(req, res){
+router.post('/create',verifyToken,upload.single('imagen'), function(req, res){
     if (!req.user) {
         res.status(403)
           .send({
@@ -28,14 +30,15 @@ router.delete('/:id',verifyToken, function(req, res){
     console.log("/delete");
 })
 
-router.put('/:id',verifyToken, function(req, res){
+router.put('/:id',verifyToken,upload.single('imagen'), function(req, res){
     if (!req.user) {
         res.status(403)
           .send({
             message: "Invalid JWT token"
           });
-    }else
-        productController.update(req,res)
+    }else{        
+      productController.update(req,res)
+    }
     console.log("/update");
 })
 

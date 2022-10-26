@@ -5,7 +5,11 @@ const Negocio = require('../modelos/negocio');
 module.exports = {
   create: function (req, res) {
     try {
+        console.log("File:",req.url);
         var newNegocio = new Negocio(req.body)
+        if(req.url[0]!='/'){
+          newNegocio.url = req.url;
+        }
         newNegocio.idU = req.user._id;
         newNegocio.save(function (err,negocio) {
             return res.status(200).json({
@@ -74,7 +78,11 @@ module.exports = {
   },
   update: function (req, res) {
     var id = req.params.id;
+    console.log("File:",req.url);
     let newNegocio = req.body;
+    if(req.url[0]!='/'){
+      newNegocio.url = req.url;
+    }
       Negocio.findByIdAndUpdate(id,newNegocio, function(err, negocio){
           if(err) {
             return res.status(500).json({

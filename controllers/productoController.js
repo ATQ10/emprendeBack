@@ -5,7 +5,11 @@ const Producto = require('../modelos/producto');
 module.exports = {
   create: function (req, res) {
     try {
+        console.log("File:",req.url);
         var newProducto = new Producto(req.body)
+        if(req.url[0]!='/'){
+          newProducto.url = req.url;
+        }
         newProducto.save(function (err,producto) {
             return res.status(200).json({
                 message: 'Producto registrado',
@@ -69,7 +73,11 @@ module.exports = {
   },
   update: function (req, res) {
     var id = req.params.id;
+    console.log("File:",req.url);
     let newProducto = req.body;
+    if(req.url[0]!='/'){
+      newProducto.url = req.url;
+    }
       Producto.findByIdAndUpdate(id,newProducto, function(err, producto){
           if(err) {
             return res.status(500).json({

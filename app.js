@@ -6,7 +6,6 @@ const express = require("express"),
 
   app.use(cors());
 
-
 require("dotenv")
   .config();
 
@@ -31,7 +30,7 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-app.use('/public', express.static(`${__dirname}/storage/imgs`))
+app.use('/public', express.static(`${__dirname}/storage/images`))
 
 //Router
 var router = require('./routes')
