@@ -39,7 +39,10 @@ const productoSchema = new Schema({
   },
   url:{
     type: String
-  }
+  },
+  activo:{
+    type: Boolean
+  },
 });
 
 module.exports = mongoose.model('Producto', productoSchema);

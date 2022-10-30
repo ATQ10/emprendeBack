@@ -33,6 +33,9 @@ const usuarioSchema = new Schema({
   telefono:{
     type: String
   },
+  premium:{
+    type: Boolean
+  },
   creado: {
     type: Date,
     default: Date.now
