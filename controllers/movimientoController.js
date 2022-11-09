@@ -5,7 +5,11 @@ const Movimiento = require('../modelos/movimiento');
 module.exports = {
   create: function (req, res) {
     try {
+      console.log("req.body",req.body)
         var newMovimiento = new Movimiento(req.body)
+        console.log("newMovimiento",newMovimiento)
+        newMovimiento.idU = req.user._id;
+        console.log("Move: ",newMovimiento);
         newMovimiento.save(function (err,movimiento) {
             return res.status(200).json({
                 message: 'Movimiento registrado',
@@ -44,7 +48,8 @@ module.exports = {
       })
   },
   getAll: function(req, res) {
-    Movimiento.find(function(err, movimientos){
+    try{
+      Movimiento.find({idU:req.user._id},function(err, movimientos){
         if(err) {
           return res.status(500).json({
             message: 'Error obteniendo los movimientos'
@@ -52,6 +57,9 @@ module.exports = {
         }
         return res.json(movimientos)
       })
+    }catch (error) {
+      console.log(error)
+    }
   },
   update: function (req, res) {
     var id = req.params.id;

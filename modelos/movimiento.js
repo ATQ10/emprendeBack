@@ -1,6 +1,8 @@
 const mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+    process.env.TZ = "America/Mexico_City";
+
 const movimientoSchema = new Schema({
   idU:{
     type: Schema.Types.ObjectId, 
@@ -20,6 +22,7 @@ const movimientoSchema = new Schema({
   },
   fecha: {
     type: Date,
+    default: Date.now
   },
   creado: {
     type: Date,
