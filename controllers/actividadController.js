@@ -5,6 +5,11 @@ const Actividad = require('../modelos/actividad');
 module.exports = {
   create: function (req, res) {
     try {
+        console.log("req.body",req.body)
+        var newActividad = new Actividad(req.body)
+        console.log("newActividad",newActividad)
+        newActividad.idU = req.user._id;
+        console.log("Activity: ",newActividad);
         var newActividad = new Actividad(req.body)
         newActividad.save(function (err,actividad) {
             return res.status(200).json({
@@ -44,7 +49,8 @@ module.exports = {
       })
   },
   getAll: function(req, res) {
-      Actividad.find(function(err, actividades){
+      let idUser = req.user._id;
+      Actividad.find({idU:idUser},function(err, actividades){
         if(err) {
           return res.status(500).json({
             message: 'Error obteniendo las actividades'

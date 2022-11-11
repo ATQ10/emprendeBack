@@ -33,7 +33,7 @@ module.exports = {
   },
   getByID: function (req, res) {
       var id = req.params.id
-      Producto.findOne({_id:id}, function(err, producto){
+      Producto.findOne({_id:id,activo:true}, function(err, producto){
           if(err) {
               return res.status(500).json({
                 message: 'Se ha producido un error al obtener el producto'

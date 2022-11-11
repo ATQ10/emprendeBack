@@ -44,10 +44,13 @@ router.put('/:id',verifyToken,upload.single('imagen'), function(req, res){
 
 router.get('/getByID/:id',verifyToken, function(req, res){
     if (!req.user) {
+      /*
         res.status(403)
           .send({
             message: "Invalid JWT token"
           });
+      */
+        productController.getByID(req,res)
     }else
         productController.getByID(req,res)
     console.log("/getByID");
