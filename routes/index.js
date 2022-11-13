@@ -17,4 +17,4 @@ router.get('/', function (req, res) {
     res.status(200).json({ message: 'Estás conectado a nuestra API para desarrollar sistema de Emprendedores' })
   })
 
-  module.exports = router
+module.exports = router

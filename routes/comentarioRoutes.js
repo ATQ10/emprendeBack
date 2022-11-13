@@ -8,7 +8,7 @@ router.get('/', function (req, res) {
 
 router.post('/create',verifyToken, function(req, res){
     if (!req.user) {
-        res.status(403)
+        res.status(200)
           .send({
             message: "Invalid JWT token"
           });
@@ -49,12 +49,13 @@ router.get('/getByID/:id',verifyToken, function(req, res){
     console.log("/getByID");
 })
 
-router.get('/getAll',verifyToken, function(req, res){
-    if (!req.user) {
-        res.status(403)
-          .send({
-            message: "Invalid JWT token"
-          });
+router.get('/getAll/:idP',verifyToken, function(req, res){
+    if (!req.user) {+
+      comentarioController.getAll(req,res)
+        //res.status(403)
+        //  .send({
+        //    message: "Invalid JWT token"
+        //  });
     }else
         comentarioController.getAll(req,res)
     console.log("/getAll");

@@ -5,7 +5,10 @@ const Comentario = require('../modelos/comentario');
 module.exports = {
   create: function (req, res) {
     try {
-        var newComentario = new Order(req.body)
+        var newComentario = new Comentario(req.body);
+        newComentario.idU = req.user._id;
+        
+        console.log("Comentario:",newComentario);
         newComentario.save(function (err,comentario) {
             return res.status(200).json({
                 message: 'Comentario registrado',
@@ -44,7 +47,9 @@ module.exports = {
       })
   },
   getAll: function(req, res) {
-    Comentario.find(function(err, comentarios){
+    var idP = req.params.idP;
+    try {
+      Comentario.find({idP:idP},function(err, comentarios){
         if(err) {
           return res.status(500).json({
             message: 'Error obteniendo los comentarios'
@@ -52,6 +57,9 @@ module.exports = {
         }
         return res.json(comentarios)
       })
+    } catch (error) {
+        console.log(error)
+    }
   },
   update: function (req, res) {
     var id = req.params.id;
