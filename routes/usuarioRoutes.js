@@ -59,9 +59,9 @@ router.put('/:id',verifyToken, function(req, res){
 router.get('/getByID/:id',verifyToken, function(req, res){
     console.log("/getByID");
     if (!req.user) {
-      res.status(403)
+      res.status(200)
         .send({
-          message: "Invalid JWT token"
+          //message: "Invalid JWT token"
         });
     }else if(req.params.id == "-1"){
       console.log("Mi usuario")

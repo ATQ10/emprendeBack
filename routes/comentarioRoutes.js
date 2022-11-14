@@ -17,6 +17,18 @@ router.post('/create',verifyToken, function(req, res){
     console.log("/create");
 })
 
+
+router.post('/sendEmail/:email',verifyToken, function(req, res){
+  if (!req.user) {
+      res.status(200)
+        .send({
+          message: "Invalid JWT token"
+        });
+  }else
+      comentarioController.sendEmail(req,res)
+  console.log("/sendEmail");
+})
+
 router.delete('/:id',verifyToken, function(req, res){
     if (!req.user) {
         res.status(403)
@@ -50,7 +62,7 @@ router.get('/getByID/:id',verifyToken, function(req, res){
 })
 
 router.get('/getAll/:idP',verifyToken, function(req, res){
-    if (!req.user) {+
+    if (!req.user) {
       comentarioController.getAll(req,res)
         //res.status(403)
         //  .send({

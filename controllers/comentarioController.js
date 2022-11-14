@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Comentario = require('../modelos/comentario');
+var nodemailer = require('nodemailer');
 
 module.exports = {
   create: function (req, res) {
@@ -15,6 +16,47 @@ module.exports = {
                 _id: comentario._id
             })
         })
+    } catch (error) {
+        console.log(error)
+    }
+  },
+  sendEmail: function (req, res) {
+    try {
+        //Send Email to userOwner
+        var email = req.params.email;
+        var mensaje = req.body.mensaje;
+        
+
+        //Creamos el objeto de transporte
+        var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'emprenego.notificacion@gmail.com',
+            pass: 'ebibqctqkpzkxitt'
+          }
+        });
+
+        var mailOptions = {
+          from: 'emprenego.notificacion@gmail.com',
+          to: email,
+          subject: 'Contacto EmpreNego',
+          text: mensaje
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email enviado: ' + info.response);
+          }
+        });
+
+        res.status(200)
+          .send({
+            message: "Mensaje enviado correctamente"
+          })
+
+
     } catch (error) {
         console.log(error)
     }
