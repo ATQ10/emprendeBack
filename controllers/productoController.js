@@ -82,6 +82,9 @@ module.exports = {
                     {
                       'detalles': {'$regex': buscar, '$options': 'i'}
                     },
+                    {
+                      'idN': buscar
+                    },
                   ]
                 },
                 {
