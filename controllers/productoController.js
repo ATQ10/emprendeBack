@@ -67,41 +67,64 @@ module.exports = {
         }else{
           var buscar = id.substring(3, id.length);
           console.log("Bustar: "+buscar);
-          Producto.find(
-            { 
-              $and: 
-              [
-                { $or: 
-                  [
-                    {
-                      'nombre': {'$regex': buscar, '$options': 'i'}
-                    },
-                    {
-                      'descripcion': {'$regex': buscar, '$options': 'i'}
-                    },
-                    {
-                      'detalles': {'$regex': buscar, '$options': 'i'}
-                    },
-                    {
-                      'idN': buscar
-                    },
-                  ]
-                },
-                {
-                  'activo': true
-                }
-              ]
-            }
-          ,function(err, productos
-            ){
-            if(err) {
-              console.log(err);
-              return res.status(500).json({
-                message: 'Error obteniendo los productos'
-              })
-            }
-            return res.json(productos)
-          })
+          if (buscar.match(/^[0-9a-fA-F]{24}$/)) {
+            Producto.find(
+              { 
+                $and: 
+                [
+                  { 
+                    'idN': buscar
+                  },
+                  {
+                    'activo': true
+                  }
+                ]
+              }
+            ,function(err, productos
+              ){
+              if(err) {
+                console.log(err);
+                return res.status(500).json({
+                  message: 'Error obteniendo los productos'
+                })
+              }
+              return res.json(productos)
+            })
+          }else{
+            Producto.find(
+              { 
+                $and: 
+                [
+                  { $or: 
+                    [
+                      {
+                        'nombre': {'$regex': buscar, '$options': 'i'}
+                      },
+                      {
+                        'descripcion': {'$regex': buscar, '$options': 'i'}
+                      },
+                      {
+                        'detalles': {'$regex': buscar, '$options': 'i'}
+                      }
+                    ]
+                  },
+                  {
+                    'activo': true
+                  }
+                ]
+              }
+            ,function(err, productos
+              ){
+              if(err) {
+                console.log(err);
+                return res.status(500).json({
+                  message: 'Error obteniendo los productos'
+                })
+              }
+              return res.json(productos)
+            })
+          }
+
         }
       }else{
         if(id.substring(0,2)=="-1"){
