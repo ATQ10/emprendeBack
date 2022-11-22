@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Negocio = require('../modelos/negocio');
+const Producto = require('../modelos/producto');
 
 module.exports = {
   create: function (req, res) {
@@ -22,15 +23,32 @@ module.exports = {
     }
   },
   remove: function (req, res) {
-      var id = req.params.id
-      Negocio.findByIdAndRemove(id, function(err, negocio){
-          if(err){
-              return res.json(500, {
-                  message: 'No existe negocio'
-                })
-          }
-          return res.json(negocio)
-      })
+      var id = req.params.id;
+      //Verificar que no existan productos
+      Producto.find({idN:id}, function(err,productos){
+        let tamanio = 0;
+        productos.forEach(prod => {
+          tamanio++;
+        });
+        if(tamanio == 0){
+          Negocio.findByIdAndRemove(id, function(err, negocio){
+            if(err){
+                return res.json(500, {
+                    message: 'No existe negocio'
+                  })
+              }
+              return res.json(200, {
+                message: 'Negocio eliminado'
+              })
+          })
+        }else{
+          return res.json(200, {
+            message: 'No es posible eliminar negocio, tiene productos ligados al mismo'
+          })
+        }
+      });
+      //Fin verificacion
+      
   },
   getByID: function (req, res) {
       var id = req.params.id
