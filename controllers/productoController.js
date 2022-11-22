@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Producto = require('../modelos/producto');
+const Comentario = require('../modelos/comentario');
 
 module.exports = {
   create: function (req, res) {
@@ -27,8 +28,27 @@ module.exports = {
               return res.json(500, {
                   message: 'No existe producto'
                 })
+          }else{
+            Comentario.find({idP:producto._id}, function(err, comments){
+              if(err){
+                  return res.json(500, {
+                      message: 'No existe comentario'
+                    })
+              }else{
+                comments.forEach(comm => {
+                  Comentario.findByIdAndRemove(comm._id,function(err, comment){
+                    if(err){
+                      return res.json(500, {
+                        message: 'No existe comentario'
+                      })
+                    }
+                  }
+                  );
+                });
+              }
+            })
+            return res.json(producto)
           }
-          return res.json(producto)
       })
   },
   getByID: function (req, res) {
