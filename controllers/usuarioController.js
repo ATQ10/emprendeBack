@@ -15,6 +15,7 @@ module.exports = {
           nombre: req.body.nombre,
           apellido: req.body.apellido,
           telefono: req.body.telefono,
+          premium: false
         })
 
         console.log(newUsuario);

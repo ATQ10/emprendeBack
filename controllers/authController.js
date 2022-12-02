@@ -4,6 +4,7 @@ const Usuario = require('../modelos/usuario');
 const fs = require('fs')
 const { promisify } = require('util')
 var nodemailer = require('nodemailer');
+const Suscripcion = require('../modelos/suscripcion');
 
 const unlinkAsync = promisify(fs.unlink)
 
@@ -14,6 +15,7 @@ exports.signup = async (req, res) => {
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
       telefono: req.body.telefono,
+      premium: false
     });
 /*
     if(req.file){
@@ -108,6 +110,64 @@ exports.signup = async (req, res) => {
         }, process.env.API_SECRET, {
           expiresIn: 86400
         });
+
+        //Verificar que el usuario es premium -- INICIO
+        let idUser = usuario._id;
+        Suscripcion.find({idU:idUser},function(err, suscripciones){
+          /*
+          if(err) {
+            return res.status(500).json({
+              message: 'Error obteniendo las suscripciones'
+            })
+          }*/
+          let suscipcionActiva = false;
+          if(suscripciones.length!=0){
+            suscripciones.sort((a, b)=> {
+              if(a.fechaFinal < b.fechaFinal) { return 1; }
+              if(a.fechaFinal > b.fechaFinal) { return -1; }
+              return 0;
+            });
+            console.log("Ultima suscripcion:",suscripciones[0]);
+            let UltimaSuscripcion = suscripciones[0];
+            const dateActual = new Date(Date.now());
+            if(dateActual<UltimaSuscripcion.fechaFinal){
+              console.log("---> SUSCRIPCION ACTIVA")
+              suscipcionActiva = true;
+            }else{
+              console.log("---> SIN SUSCRIPCION")
+            }
+          }else{
+            console.log("---> SIN SUSCRIPCION")
+          }
+
+          //Actualizando status de suscripción
+          Usuario.findOne({_id:idUser}, function(err, usuario){
+            /*
+            if(err) {
+                return res.status(500).json({
+                  message: 'Se ha producido un error al obtener el usuario'
+                })
+            }
+            if(!usuario){
+                return res.status(404).json( {
+                    message: 'No tenemos este usuario'
+                })
+            
+            }*/
+            usuario.premium = suscipcionActiva;
+            Usuario.findByIdAndUpdate(usuario._id,usuario, function(err, usuarioEdit){
+              /*
+              if(err) {
+                return res.status(500).json({
+                  message: 'Error actualizando usuario'
+                })
+              }
+              return res.json(usuarioEdit);
+              */
+            })
+          })
+        })
+        //Verificar que el usuario es premium -- FINAL 
   
         //responding to client request with user profile success message and  access token .
         res.status(200)

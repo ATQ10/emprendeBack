@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Producto = require('../modelos/producto');
 const Comentario = require('../modelos/comentario');
+const Usuario = require('../modelos/usuario');
+const LIMITEFREE = 10;
 
 module.exports = {
   create: function (req, res) {
@@ -11,6 +13,7 @@ module.exports = {
         if(req.url[0]!='/'){
           newProducto.url = req.url;
         }
+        newProducto.activo = false;
         newProducto.save(function (err,producto) {
             return res.status(200).json({
                 message: 'Producto registrado',
@@ -178,7 +181,26 @@ module.exports = {
     if(req.url[0]!='/'){
       newProducto.url = req.url;
     }
-      Producto.findByIdAndUpdate(id,newProducto, function(err, producto){
+    console.log("ACTUALIZANDO PRODUCTO",newProducto);
+    //VERIFICACION: Se ha cambiado a activo --> true
+    Producto.find({
+      $and:[
+        {idN:newProducto.idN},
+        {activo:true}
+      ]
+    }
+      , function(err0, prodsOrigen){
+      let actualizar = false;
+      prodsOrigen.forEach(prod=>{
+        if(prod._id.valueOf() == newProducto._id){
+          console.log("Entra")
+          //console.log("actualizar",prod,newProducto)
+          actualizar = true;
+        }
+      })
+      console.log("actualizar",actualizar,prodsOrigen.length)
+      if(prodsOrigen.length<LIMITEFREE || actualizar){ //  NO SE EXCEDE LIMITE
+        Producto.findByIdAndUpdate(id,newProducto, function(err, producto){
         console.log(err);
           if(err) {
             return res.status(500).json({
@@ -186,6 +208,27 @@ module.exports = {
             })
           }
           return res.json(newProducto);
-      })
+        })
+      }else{ //  SE EXCEDE LIMITE
+        Usuario.findOne({_id:req.user._id}, function(err, usuario){
+          console.log("USUARIO",usuario)
+          if(usuario.premium){ // ES PREMIUM
+            Producto.findByIdAndUpdate(id,newProducto, function(err, producto){
+            console.log(err);
+              if(err) {
+                return res.status(500).json({
+                  message: 'Error actualizando producto'
+                })
+              }
+              return res.json(newProducto);
+            })
+          }else{ // NO LO ES
+            return res.status(200).json({
+              message: 'Haz excedido el límite gratuito'
+            })
+          }
+        });
+      }
+    });
   },
 }
